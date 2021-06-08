@@ -8,8 +8,8 @@
 //! in memory, in this case considering [`memchr`] instead. Besides, if you want to search multiple
 //! substrings at once, take a look at [`aho-corasick`].
 //!
-//! [`memchr`]: crates.io/crates/memchr
-//! [`aho-corasick`]: crates.io/cretes/aho-corasick
+//! [`memchr`]: https://crates.io/crates/memchr
+//! [`aho-corasick`]: https://crates.io/crates/aho-corasick
 //! [`Read`]: std::io::Read
 //!
 //! # Examples
@@ -93,7 +93,7 @@
 //!     let read_pos = match iter.next().transpose()? {
 //!         // if the file contains no newline, we read from the start.
 //!         None => 0,
-//!         // if the file ends with a newline, we need to perfrom another search.
+//!         // if the file ends with a newline, we need to perform another search.
 //!         Some(pos) if pos + 1 == iter.stream_len() => {
 //!             (iter.next().transpose()?.map(|x| x + 1)).unwrap_or(0)
 //!         }
