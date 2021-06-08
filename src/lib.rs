@@ -27,7 +27,7 @@
 //! }
 //! ```
 //!
-//! - Gets the indexes of the first ten occurrences of a substring in a file.
+//! - Gets the indexes of the first 10 occurrences of a substring in a file.
 //!
 //! ```no_run
 //! use std::fs::File;
@@ -64,8 +64,7 @@
 //!
 //! ```
 //!
-//! - Reads a given number of tail lines of a file, without loading the entire contents of the file into
-//! memory.
+//! - Reads the last line of a file, without loading the entire contents of the file into memory.
 //!
 //! ```no_run
 //! use std::fs::File;
