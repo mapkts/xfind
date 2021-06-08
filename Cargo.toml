@@ -1,0 +1,15 @@
+[package]
+authors = ["Aaron Taner <mapkts@gmail.com>"]
+description = "Fast substring searchers for stream searches"
+documentation = "https://docs.rs/xfind/"
+edition = "2018"
+exclude = ["./github"]
+keywords = ["find", "search", "stream", "substring"]
+license = "MIT OR Apache-2.0"
+name = "xfind"
+readme = "README.md"
+repository = "https://github.com/mapkts/xfind"
+version = "0.1.0"
+
+[dependencies]
+memchr = "2.4"
