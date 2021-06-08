@@ -27,4 +27,4 @@ https://docs.rs/xfind
 
 ## License
 
-Licensed under either of [`MIT-LICENSE`](./LICENSE-MIT) or [`UNLICENSE`](./UNLICENSE), at your option.
+Licensed under either of [MIT-LICENSE](./LICENSE-MIT) or [UNLICENSE](./UNLICENSE), at your option.
