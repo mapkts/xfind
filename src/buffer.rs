@@ -76,7 +76,7 @@ impl Buffer {
         let roll_start = self
             .end
             .checked_sub(self.min)
-            .expect("buffer capacity should be bigger than minimum amout.");
+            .expect("buffer capacity should be bigger than minimum amount.");
         let roll_len = self.min;
 
         assert!(roll_start + roll_len <= self.end);
@@ -169,7 +169,7 @@ impl BufferRev {
     }
 
     /// Rolls the contents of the buffer so that the prefix of this buffer is moved to the end
-    /// and all other contents are dropped. The size of the suffix corresponds precisely to the
+    /// and all other contents are dropped. The size of the prefix corresponds precisely to the
     /// minimum buffer length.
     ///
     /// This should only be called when the entire contents of this buffer have been searched. And
@@ -178,7 +178,7 @@ impl BufferRev {
         let roll_start = self
             .end
             .checked_sub(self.min)
-            .expect("buffer capacity should be bigger than minimum amout.");
+            .expect("buffer capacity should be bigger than minimum amount.");
         let roll_len = self.min;
 
         assert!(roll_start + roll_len <= self.end);
