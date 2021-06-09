@@ -101,7 +101,6 @@
 //!     };
 //!
 //!     iter.seek_to(read_pos)?;
-//!     drop(iter);
 //!     f.read_to_end(buf)
 //! }
 //! ```

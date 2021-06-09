@@ -4,6 +4,21 @@ use memchr::memmem;
 use std::io::{self, Read, Seek, SeekFrom};
 
 /// Returns the index of the first occurrence of the given needle in the stream.
+///
+/// # Examples
+///
+/// ```
+/// use std::io::{self, Cursor};
+///
+/// fn main() -> io::Result<()> {
+///     let mut stream = Cursor::new(b"rusty rust");
+///
+///     let pos = xfind::find(b"rust", &mut stream).transpose()?;
+///     assert_eq!(pos, Some(0));
+///
+///     Ok(())
+/// }
+/// ```
 pub fn find<R>(needle: &[u8], rdr: &mut R) -> Option<io::Result<usize>>
 where
     R: Read,
@@ -12,6 +27,21 @@ where
 }
 
 /// Returns the index of the last occurrence of the given needle in the stream.
+///
+/// # Examples
+///
+/// ```
+/// use std::io::{self, Cursor};
+///
+/// fn main() -> io::Result<()> {
+///     let mut stream = Cursor::new(b"rusty rust");
+///
+///     let pos = xfind::rfind(b"rust", &mut stream).transpose()?;
+///     assert_eq!(pos, Some(6));
+///
+///     Ok(())
+/// }
+/// ```
 pub fn rfind<R>(needle: &[u8], rdr: &mut R) -> Option<io::Result<usize>>
 where
     R: Read + Seek,
@@ -23,6 +53,23 @@ where
 }
 
 /// Returns an iterator over all occurrences of the given needle in the stream.
+///
+/// # Examples
+///
+/// ```
+/// use std::io::{self, Cursor};
+///
+/// fn main() -> io::Result<()> {
+///     let mut stream = Cursor::new(b"rusty rust");
+///
+///     let mut iter = xfind::find_iter(b"rust", &mut stream);
+///     assert_eq!(iter.next().transpose()?, Some(0));
+///     assert_eq!(iter.next().transpose()?, Some(6));
+///     assert_eq!(iter.next().transpose()?, None);
+///
+///     Ok(())
+/// }
+/// ```
 pub fn find_iter<'n, 's, R>(
     needle: &'n [u8],
     rdr: &'s mut R,
@@ -42,6 +89,23 @@ where
 /// # Panics
 ///
 /// Panics if the length of the stream is greater than `usize::MAX`.
+///
+/// # Examples
+///
+/// ```
+/// use std::io::{self, Cursor};
+///
+/// fn main() -> io::Result<()> {
+///     let mut stream = Cursor::new(b"rusty rust");
+///
+///     let mut iter = xfind::rfind_iter(b"rust", &mut stream)?;
+///     assert_eq!(iter.next().transpose()?, Some(6));
+///     assert_eq!(iter.next().transpose()?, Some(0));
+///     assert_eq!(iter.next().transpose()?, None);
+///
+///     Ok(())
+/// }
+/// ```
 pub fn rfind_iter<'n, 's, R>(
     needle: &'n [u8],
     rdr: &'s mut R,
@@ -61,16 +125,50 @@ pub struct StreamFinder<'n> {
 
 impl<'n> StreamFinder<'n> {
     /// Creates a new `StreamFinder` for the given needle.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use xfind::StreamFinder;
+    ///
+    /// let finder = StreamFinder::new(b"rust");
+    /// ```
     pub fn new(needle: &'n [u8]) -> StreamFinder<'n> {
         StreamFinder { needle }
     }
 
     /// Returns the needle that this finder searches for.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use xfind::StreamFinder;
+    ///
+    /// let finder = StreamFinder::new(b"rust");
+    /// assert_eq!(finder.needle(), b"rust");
+    /// ```
     pub fn needle(&self) -> &[u8] {
         self.needle
     }
 
     /// Returns the index of the first occurrence of the given needle in the stream.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::io::{self, Cursor};
+    /// use xfind::StreamFinder;
+    ///
+    /// fn main() -> io::Result<()> {
+    ///     let mut stream = Cursor::new(b"rusty rust");
+    ///     let finder = StreamFinder::new(b"rust");
+    ///
+    ///     let pos = finder.find(&mut stream).transpose()?;
+    ///     assert_eq!(pos, Some(0));
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn find<R: Read>(&self, rdr: &mut R) -> Option<io::Result<usize>> {
         self.find_iter(rdr).next()
     }
@@ -80,6 +178,23 @@ impl<'n> StreamFinder<'n> {
     /// # Panics
     ///
     /// Panics if the length of the stream is greater than `usize::MAX`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::io::{self, Cursor};
+    /// use xfind::StreamFinder;
+    ///
+    /// fn main() -> io::Result<()> {
+    ///     let mut stream = Cursor::new(b"rusty rust");
+    ///     let finder = StreamFinder::new(b"rust");
+    ///
+    ///     let pos = finder.rfind(&mut stream).transpose()?;
+    ///     assert_eq!(pos, Some(6));
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn rfind<R: Read + Seek>(
         &self,
         rdr: &mut R,
@@ -91,6 +206,25 @@ impl<'n> StreamFinder<'n> {
     }
 
     /// Returns an iterator over all occurrences of the given needle in the stream.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::io::{self, Cursor};
+    /// use xfind::StreamFinder;
+    ///
+    /// fn main() -> io::Result<()> {
+    ///     let mut stream = Cursor::new(b"rusty rust");
+    ///     let finder = StreamFinder::new(b"rust");
+    ///
+    ///     let mut iter = finder.find_iter(&mut stream);
+    ///     assert_eq!(iter.next().transpose()?, Some(0));
+    ///     assert_eq!(iter.next().transpose()?, Some(6));
+    ///     assert_eq!(iter.next().transpose()?, None);
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn find_iter<'s, R: Read>(
         &'n self,
         rdr: &'s mut R,
@@ -107,6 +241,25 @@ impl<'n> StreamFinder<'n> {
     /// # Panics
     ///
     /// Panics if the length of the stream is greater than `usize::MAX`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::io::{self, Cursor};
+    /// use xfind::StreamFinder;
+    ///
+    /// fn main() -> io::Result<()> {
+    ///     let mut stream = Cursor::new(b"rusty rust");
+    ///     let finder = StreamFinder::new(b"rust");
+    ///
+    ///     let mut iter = finder.rfind_iter(&mut stream)?;
+    ///     assert_eq!(iter.next().transpose()?, Some(6));
+    ///     assert_eq!(iter.next().transpose()?, Some(0));
+    ///     assert_eq!(iter.next().transpose()?, None);
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn rfind_iter<'s, R: Read + Seek>(
         &'n self,
         rdr: &'s mut R,
@@ -122,7 +275,7 @@ impl<'n> StreamFinder<'n> {
 pub struct FindIter<'n, 's, R: Read> {
     /// The stream source we read from.
     rdr: &'s mut R,
-    /// The original finder, which contains the needle.
+    /// The needle we search for.
     needle: &'n [u8],
     /// A fixed size buffer that we actually search for. It must be big enough to hold the needle.
     buf: Buffer,
@@ -141,7 +294,7 @@ pub struct FindIter<'n, 's, R: Read> {
 pub struct FindRevIter<'n, 's, R: Read + Seek> {
     /// The stream source we read from.
     rdr: &'s mut R,
-    /// The original finder, which contains the needle.
+    /// The needle we search for.
     needle: &'n [u8],
     /// A fixed size buffer that we actually search for. It must be big enough to hold the needle.
     buf: BufferRev,
@@ -229,11 +382,46 @@ impl<'n, 's, R: Read + Seek> FindRevIter<'n, 's, R> {
     }
 
     /// Returns the length of the underlying stream.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::io::{self, Read, Cursor};
+    ///
+    /// fn main() -> io::Result<()> {
+    ///     let mut stream = Cursor::new(b"hello rustaceans");
+    ///     let mut iter = xfind::rfind_iter(b"rust", &mut stream)?;
+    ///     assert_eq!(iter.stream_len(), 16);
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn stream_len(&self) -> usize {
         self.stream_len
     }
 
-    /// Moves the curosr of the underlying stream to the given position.
+    /// Moves the cursor of the underlying stream to the given position.
+    ///
+    /// This is equivalent to call `rdr.seek(SeekFrom::Start(pos))`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::io::{self, Read, Cursor};
+    ///
+    /// fn main() -> io::Result<()> {
+    ///     let mut stream = Cursor::new(b"hello rustaceans");
+    ///     let mut iter = xfind::rfind_iter(b"rust", &mut stream)?;
+    ///     let mut buf = Vec::new();
+    ///
+    ///     let pos = iter.next().unwrap()?;
+    ///     iter.seek_to(pos)?;
+    ///     stream.read_to_end(&mut buf)?;
+    ///     assert_eq!(buf, b"rustaceans");
+    ///
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn seek_to(&mut self, pos: usize) -> io::Result<()> {
         self.rdr.seek(SeekFrom::Start(pos as u64)).map(|_| ())
     }
@@ -256,7 +444,6 @@ impl<'n, 's, R: Read> Iterator for FindIter<'n, 's, R> {
                 }
 
                 self.stream_pos += self.buf.len() - self.search_pos;
-                // self.search_pos = self.buf.len() - self.search_pos;
                 self.search_pos = self.buf.len();
             }
 
@@ -312,7 +499,6 @@ impl<'n, 's, R: Read + Seek> Iterator for FindRevIter<'n, 's, R> {
 
             // Roll our buffer if our buffer has at least the minimum amount of bytes in it.
             if self.buf.len() >= self.buf.min_buffer_len() {
-                // self.stream_pos += self.buf.min_buffer_len();
                 self.buf.roll_right();
                 self.stream_pos += self.buf.len();
                 self.search_pos = 0;
