@@ -43,8 +43,8 @@
 //! - When searching only one substrings, `xfind` beats `aho-corasick` in all cases above, which is
 //! still fair because `aho-corasick` is mainly used for searching multiple substrings at once.
 //!
-//! - Reverse stream searches are by its nature pretty slow and performances of `xfind` and `memmem`
-//! are pretty close, only memory usages differ.
+//! - Reverse stream searches are by its nature much slower than forward stream searches. The
+//! performances of `xfind` and `memmem` are pretty close, only memory usages differ.
 //!
 //! [`memchr`]: https://crates.io/crates/memchr
 //! [`aho-corasick`]: https://crates.io/crates/aho-corasick
