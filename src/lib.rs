@@ -8,9 +8,15 @@
 //! in memory, in this case consider using the [`memchr`] library instead. Besides, if you want to
 //! search multiple substrings at once, take a look at [`aho-corasick`].
 //!
+//! # Complexity
+//!
+//! Forward and backward stream search routines provided by this crate is guaranteed to have worst
+//! case linear time complexity with repect to both `needle.len()` and `stream.len()`, and worst
+//! case constant space complexity with repect to `needle.len()`.
+//!
 //! # Performance
 //!
-//! Below is a collected benchmark result when searching all occurrences of `dear` in a 767KB book
+//! Below is a collected benchmark result for searching all occurrences of `dear` in a 767KB book
 //! [`Pride and Prejudice`](https://www.gutenberg.org/files/1342/1342-0.txt).
 //!
 //! ```text
@@ -26,12 +32,10 @@
 //! test stream_rfind_iter_xfind       ... bench:     667,330 ns/iter (+/- 10,283)
 //! ```
 //!
-//! In short:
-//!
-//! - When performing forward stream seaches, `xfind` is nearly 2.0x slower than `memchr::memmem`,
-//! which is fair because `memmem` reads all contents of the file into a fairly large pre-allocated
-//! buffer (>= 767KB) once and operates over it, while `xfind` performs stream searches using an
-//! 8KB-only buffer.
+//! - When performing forward stream searches, `xfind` is about 2.0x slower than `memchr::memmem`,
+//! which is fair because `memmem` needs to read all contents of the file into a fairly large
+//! pre-allocated buffer (>= 767KB) and operates over it, while `xfind` performs stream searches
+//! using an 8KB-only buffer.
 //!
 //! - `xfind` provides no advantage when searching through in-memory buffers (nearly 1.8x slower),
 //! so please don't use it for in-memory searches.
@@ -138,10 +142,9 @@
 //!     f.read_to_end(buf)
 //! }
 //! ```
-
 #![deny(missing_docs)]
 
 mod buffer;
-
 mod finder;
+
 pub use finder::*;
