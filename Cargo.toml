@@ -1,6 +1,6 @@
 [package]
 authors = ["Aaron Taner <mapkts@gmail.com>"]
-description = "Fast substring searchers for stream searches."
+description = "Fast forward and backward stream search routines."
 documentation = "https://docs.rs/xfind/"
 edition = "2018"
 exclude = ["./github"]
