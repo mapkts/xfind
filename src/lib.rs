@@ -11,8 +11,8 @@
 //! # Complexity
 //!
 //! Forward and backward stream search routines provided by this crate is guaranteed to have worst
-//! case linear time complexity with repect to both `needle.len()` and `stream.len()`, and worst
-//! case constant space complexity with repect to `needle.len()`.
+//! case linear time complexity with respect to both `needle.len()` and `stream.len()`, and worst
+//! case constant space complexity with respect to `needle.len()`.
 //!
 //! # Performance
 //!
