@@ -5,8 +5,42 @@
 //! [`Read`] instances) rather than in-memory buffers.
 //!
 //! Note that this crate provides no advantage when searching substring in a source that is already
-//! in memory, in this case considering [`memchr`] instead. Besides, if you want to search multiple
-//! substrings at once, take a look at [`aho-corasick`].
+//! in memory, in this case consider using the [`memchr`] library instead. Besides, if you want to
+//! search multiple substrings at once, take a look at [`aho-corasick`].
+//!
+//! # Performance
+//!
+//! Below is a collected benchmark result when searching all occurrences of `dear` in a 767KB book
+//! [`Pride and Prejudice`](https://www.gutenberg.org/files/1342/1342-0.txt).
+//!
+//! ```text
+//! test memory_find_iter_aho_corasick ... bench:     464,070 ns/iter (+/- 6,166)
+//! test memory_find_iter_memmem       ... bench:      24,224 ns/iter (+/- 314)
+//! test memory_find_iter_xfind        ... bench:      43,408 ns/iter (+/- 948)
+//! test memory_rfind_iter_memmem      ... bench:     543,790 ns/iter (+/- 9,169)
+//! test memory_rfind_iter_xfind       ... bench:     502,290 ns/iter (+/- 6,643)
+//! test stream_find_iter_aho_corasick ... bench:     642,467 ns/iter (+/- 20,707)
+//! test stream_find_iter_memmem       ... bench:      90,457 ns/iter (+/- 2,776)
+//! test stream_find_iter_xfind        ... bench:     182,127 ns/iter (+/- 3,683)
+//! test stream_rfind_iter_memmem      ... bench:     614,040 ns/iter (+/- 28,896)
+//! test stream_rfind_iter_xfind       ... bench:     667,330 ns/iter (+/- 10,283)
+//! ```
+//!
+//! In short:
+//!
+//! - When performing forward stream seaches, `xfind` is nearly 2.0x slower than `memchr::memmem`,
+//! which is fair because `memmem` reads all contents of the file into a fairly large pre-allocated
+//! buffer (>= 767KB) once and operates over it, while `xfind` performs stream searches using an
+//! 8KB-only buffer.
+//!
+//! - `xfind` provides no advantage when searching through in-memory buffers (nearly 1.8x slower),
+//! so please don't use it for in-memory searches.
+//!
+//! - When searching only one substrings, `xfind` beats `aho-corasick` in all cases above, which is
+//! still fair because `aho-corasick` is mainly used for searching multiple substrings at once.
+//!
+//! - Reverse stream searches are by its nature pretty slow and performances of `xfind` and `memmem`
+//! are pretty close, only memory usages differ.
 //!
 //! [`memchr`]: https://crates.io/crates/memchr
 //! [`aho-corasick`]: https://crates.io/crates/aho-corasick
@@ -76,7 +110,7 @@
 //!
 //!     let mut buf = Vec::new();
 //!     read_last_line(path, &mut buf)?;
-//!     // For simplicity, we just assume the contents is UTF-8 valid and unwrap here.
+//!     // For simplicity, we just assume the contents is valid UTF-8 and unwrap here.
 //!     println!("{}", std::str::from_utf8(&buf).unwrap());
 //!
 //!     Ok(())
