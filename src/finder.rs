@@ -285,8 +285,6 @@ pub struct FindIter<'n, 's, R: Read> {
     stream_pos: usize,
     /// The position we report to the caller.
     report_pos: usize,
-    /// If the match found was at the very end of the buffer.
-    is_tail_match: bool,
 }
 
 /// A backward iterator over all non-overlapping occurrences of a substring in a stream.
@@ -323,7 +321,6 @@ impl<'n, 's, R: Read> FindIter<'n, 's, R> {
             search_pos: 0,
             stream_pos: 0,
             report_pos: 0,
-            is_tail_match: false,
         }
     }
 
@@ -336,7 +333,6 @@ impl<'n, 's, R: Read> FindIter<'n, 's, R> {
             search_pos: 0,
             stream_pos: 0,
             report_pos: 0,
-            is_tail_match: false,
         }
     }
 }
@@ -490,45 +486,8 @@ impl<'n, 's, R: Read + Seek> Iterator for FindRevIter<'n, 's, R> {
                 ) {
                     self.report_pos = self.stream_pos
                         - (self.buf.len() - self.search_pos - mat);
-
-                    // if [19827, 19716, 5838, 938, 544, 51]
-                    if [7552, 7450, 6985, 6866, 6829, 6775]
-                        .contains(&self.report_pos)
-                    {
-                        eprintln!(
-                            "report: {}, search: {}, stream: {}, seek: {}",
-                            self.report_pos,
-                            self.search_pos,
-                            self.stream_pos,
-                            self.seek_pos,
-                        );
-                        // eprintln!(
-                        //     "buffer: {}",
-                        //     std::str::from_utf8(self.buf.buffer()).unwrap()
-                        // );
-                    }
-
                     self.stream_pos -= self.buf.len() - self.search_pos - mat;
                     self.search_pos += self.buf.len() - self.search_pos - mat;
-
-                    // if [19827, 19716, 5838, 938, 544, 51]
-                    if [7552, 7450, 6985, 6866, 6829, 6775]
-                        .contains(&self.report_pos)
-                    {
-                        eprintln!(
-                            "report: {}, search: {}, stream: {}, seek: {}, buflen: {}, buflen - search_pos: {}",
-                            self.report_pos,
-                            self.search_pos,
-                            self.stream_pos,
-                            self.seek_pos,
-                            self.buf.len(),
-                            self.buf.len() - self.search_pos,
-                        );
-                        // eprintln!(
-                        //     "buffer: {}",
-                        //     std::str::from_utf8(self.buf.buffer()).unwrap()
-                        // );
-                    }
 
                     // FIXME: This is a quick and dirty hack to fix end-of-stream roll issues. We
                     // should probably figure out a better way to handle this.
