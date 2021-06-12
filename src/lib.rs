@@ -33,9 +33,10 @@
 //! ```
 //!
 //! - When performing forward stream searches, `xfind` is about 2.0x slower than `memchr::memmem`,
-//! which is fair because `memmem` needs to read all contents of the file into a fairly large
-//! pre-allocated buffer (>= 767KB) and operates over it, while `xfind` performs stream searches
-//! using an 8KB-only buffer.
+//! which is actually quite fast because `memmem` itself operates on in-memory buffer but `xfind`
+//! operates directly on stream. The great difference is memory usage, `xfind` done its jobs by
+//! using a 8KB-only buffer, but `memmem` needed to read the contents of the file into a file-sized
+//! buffer (767KB in this case).
 //!
 //! - `xfind` provides no advantage when searching through in-memory buffers (nearly 1.8x slower),
 //! so please don't use it for in-memory searches.
