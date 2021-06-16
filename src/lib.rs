@@ -17,7 +17,8 @@
 //! # Performance
 //!
 //! Below is a collected benchmark result for searching all occurrences of `dear` in a 767KB book
-//! [`Pride and Prejudice`](https://www.gutenberg.org/files/1342/1342-0.txt).
+//! [`Pride and Prejudice`](https://www.gutenberg.org/files/1342/1342-0.txt). Feel free to run the
+//! benchsuite using `cargo bench` in your terminal.
 //!
 //! ```text
 //! test group_1::stream_find_iter::aho_corasick ... bench:     558,530 ns/iter (+/- 8,705)
