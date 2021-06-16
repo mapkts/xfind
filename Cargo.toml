@@ -9,7 +9,7 @@ license = "MIT OR Unlicense"
 name = "xfind"
 readme = "README.md"
 repository = "https://github.com/mapkts/xfind"
-version = "0.2.3"
+version = "0.2.4"
 
 [dependencies]
 memchr = "2.4"
@@ -18,6 +18,6 @@ memchr = "2.4"
 aho-corasick = "0.7"
 
 [[bench]]
-name = "fread"
-path = "benches/fread.rs"
+name = "bench"
+path = "benches/bench.rs"
 
