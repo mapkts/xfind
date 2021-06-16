@@ -20,32 +20,37 @@
 //! [`Pride and Prejudice`](https://www.gutenberg.org/files/1342/1342-0.txt).
 //!
 //! ```text
-//! test memory_find_iter_aho_corasick ... bench:     464,070 ns/iter (+/- 6,166)
-//! test memory_find_iter_memmem       ... bench:      24,224 ns/iter (+/- 314)
-//! test memory_find_iter_xfind        ... bench:      43,408 ns/iter (+/- 948)
-//! test memory_rfind_iter_memmem      ... bench:     543,790 ns/iter (+/- 9,169)
-//! test memory_rfind_iter_xfind       ... bench:     502,290 ns/iter (+/- 6,643)
-//! test stream_find_iter_aho_corasick ... bench:     642,467 ns/iter (+/- 20,707)
-//! test stream_find_iter_memmem       ... bench:      90,457 ns/iter (+/- 2,776)
-//! test stream_find_iter_xfind        ... bench:     182,127 ns/iter (+/- 3,683)
-//! test stream_rfind_iter_memmem      ... bench:     614,040 ns/iter (+/- 28,896)
-//! test stream_rfind_iter_xfind       ... bench:     667,330 ns/iter (+/- 10,283)
+//! test group_1::stream_find_iter::aho_corasick ... bench:     558,530 ns/iter (+/- 8,705)
+//! test group_1::stream_find_iter::memchr       ... bench:      89,728 ns/iter (+/- 4,979)
+//! test group_1::stream_find_iter::xfind        ... bench:     112,766 ns/iter (+/- 2,453)
+//!
+//! test group_2::stream_rfind_iter::memchr      ... bench:     613,183 ns/iter (+/- 10,610)
+//! test group_2::stream_rfind_iter::xfind       ... bench:     681,210 ns/iter (+/- 6,990)
+//!
+//! test group_3::memory_find_iter::aho_corasick ... bench:     454,277 ns/iter (+/- 2,030)
+//! test group_3::memory_find_iter::memchr       ... bench:      21,564 ns/iter (+/- 657)
+//! test group_3::memory_find_iter::xfind        ... bench:      41,548 ns/iter (+/- 2,028)
+//!
+//! test group_4::memory_rfind_iter::memchr      ... bench:     543,737 ns/iter (+/- 4,420)
+//! test group_4::memory_rfind_iter::xfind       ... bench:     590,744 ns/iter (+/- 14,684)
 //! ```
 //!
-//! - When performing forward stream searches, `xfind` is about 2.0x slower than `memchr::memmem`,
-//! which is actually quite fast because `memmem` itself operates on in-memory buffer but `xfind`
-//! operates directly on stream. The great difference is memory usage, `xfind` done its jobs by
-//! using a 8KB-only buffer, but `memmem` needed to read the contents of the file into a file-sized
-//! buffer (767KB in this case).
+//! - When performing forward stream searches, `xfind` is about 1.3x slower than `memchr::memmem`
+//! (group 1), which is actually quite fast because `memmem` itself operates on in-memory buffer
+//! but `xfind` operates directly on stream. The great difference is memory usage, `xfind` done its
+//! jobs by using a 8KB-only buffer, but `memmem` needed to read the contents of the file into a
+//! file-sized buffer (767KB in this case).
 //!
-//! - `xfind` provides no advantage when searching through in-memory buffers (nearly 1.8x slower),
-//! so please don't use it for in-memory searches.
+//! - `xfind` provides no advantage when searching through in-memory buffers (nearly 2x slower)
+//! (group 3), so please don't use it for in-memory searches.
 //!
-//! - When searching only one substrings, `xfind` beats `aho-corasick` in all cases above, which is
-//! still fair because `aho-corasick` is mainly used for searching multiple substrings at once.
+//! - When searching only one substrings, `xfind` beats `aho-corasick` in all cases above
+//! (group 1, 3), which is still fair because `aho-corasick` is mainly used for searching multiple
+//! substrings at once.
 //!
-//! - Reverse stream searches are by its nature much slower than forward stream searches. The
-//! performances of `xfind` and `memmem` are pretty close, only memory usages differ.
+//! - Reverse stream searches are by its nature much slower than forward stream searches
+//! (group 2, 4). The performances of `xfind` and `memmem` are pretty close, only memory usages
+//! differ.
 //!
 //! [`memchr`]: https://crates.io/crates/memchr
 //! [`aho-corasick`]: https://crates.io/crates/aho-corasick
