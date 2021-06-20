@@ -44,7 +44,7 @@ impl Buffer {
         self.end
     }
 
-    /// Returns all free capactiy in  this buffer.
+    /// Returns all free capactiy in this buffer.
     fn free_buffer(&mut self) -> &mut [u8] {
         &mut self.buf[self.end..]
     }
@@ -139,7 +139,7 @@ impl BufferRev {
         self.end
     }
 
-    /// Returns all free capactiy in  this buffer.
+    /// Returns all free capactiy in this buffer.
     pub fn free_buffer(&mut self) -> &mut [u8] {
         let capacity = self.capacity();
         &mut self.buf[..capacity - self.end]
