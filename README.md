@@ -18,7 +18,7 @@ This library provides fast forward and backward substring searchers for stream s
 Add this to your Cargo.toml
 
 ```toml
-xfind = "0.1"
+xfind = "0.2"
 ```
 
 ## Documentation
