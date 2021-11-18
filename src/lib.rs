@@ -17,8 +17,7 @@
 //! # Performance
 //!
 //! Below is a collected benchmark result for searching all occurrences of `dear` in a 767KB book
-//! [`Pride and Prejudice`](https://www.gutenberg.org/files/1342/1342-0.txt). You can run this
-//! benchsuite using `cargo bench` in your terminal.
+//! [`Pride and Prejudice`](https://www.gutenberg.org/files/1342/1342-0.txt).
 //!
 //! ```text
 //! test group_1::stream_find_iter::aho_corasick ... bench:     558,530 ns/iter (+/- 8,705)
@@ -38,9 +37,9 @@
 //!
 //! - When performing forward stream searches, `xfind` is about 1.3x slower than `memchr::memmem`
 //! (group 1), which is actually quite fast because `memmem` itself operates on in-memory buffer
-//! but `xfind` operates directly on stream. The great difference is memory usage, `xfind` done its
-//! jobs by using a 8KB-only buffer, but `memmem` needed to read the contents of the file into a
-//! file-sized buffer (767KB in this case).
+//! but `xfind` operates directly on stream. The main difference is memory usage, `xfind` done its
+//! jobs by using a 8KB-only buffer, but `memmem` needed to read all the contents of the file into
+//! a file-sized buffer (767KB in this case).
 //!
 //! - `xfind` provides no advantage when searching through in-memory buffers (nearly 2x slower)
 //! (group 3), so please don't use it for in-memory searches.
